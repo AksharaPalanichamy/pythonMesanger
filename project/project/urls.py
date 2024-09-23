@@ -20,5 +20,5 @@ from app.views import chat_box
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("chat/<str:chat_box_name>/", chat_box, name="chat"),
+    path("chat/<str:chat_box_name>/", chat_box, name="chat_box"),
 ]
