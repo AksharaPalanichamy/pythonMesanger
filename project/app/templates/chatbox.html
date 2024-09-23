@@ -106,6 +106,36 @@
             chatLog.appendChild(messageDiv);
             chatLog.scrollTop = chatLog.scrollHeight; // Scroll to bottom
         }
+        
+        
+        /*chatSocket.onmessage = function (e) {
+    const data = JSON.parse(e.data);
+    const messageType = data.username === user_username ? 'sent' : 'received';
+    addMessageToChat(data.message, data.username, messageType);
+};
+
+function addMessageToChat(message, username, type) {
+    // Create a new div element for the message
+    const messageDiv = document.createElement('div');
+    messageDiv.classList.add('message', type); // Add 'sent' or 'received' class based on the message type
+
+    // Create a structured HTML for the message
+    messageDiv.innerHTML = `
+        <div class="message-content">
+            <strong>${username}:</strong> ${message}
+        </div>
+    `;
+
+    // Find the chat log element to append messages to
+    const chatLog = document.getElementById('chat-text'); // Ensure 'chat-text' is the correct ID
+    if (chatLog) {
+        chatLog.appendChild(messageDiv); // Append the message to the chat log
+        chatLog.scrollTop = chatLog.scrollHeight; // Scroll to the bottom of the chat log
+    } else {
+        console.error("Chat log element not found. Please check the element ID or structure.");
+    }
+}*/
+
     </script>
 
     <!-- Optional JavaScript -->
