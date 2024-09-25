@@ -13,7 +13,7 @@ def chat_box(request, chat_box_name):
     except User.DoesNotExist:
         target_user = None  # Or handle differently if needed
 
-    chat_box_name=generate_room_name(current_user, target_user.username)
+    chat_box_name=generate_room_name(current_user, target_user.username if target_user else "")
     chat_room, created = ChatRoom.objects.get_or_create(name=chat_box_name)
 
     messages = Message.objects.filter(room=chat_room).order_by('timestamp')
