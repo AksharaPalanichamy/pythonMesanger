@@ -7,7 +7,7 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-          integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+          crossorigin="anonymous">
     <style>
         body {
             background-color: #f8f9fa;
@@ -31,11 +31,11 @@
         }
         .message.sent {
             align-self: flex-end;
-            background-color: #d4edda; /* Light green */
+            background-color: #d4edda;
         }
         .message.received {
             align-self: flex-start;
-            background-color: #f1f1f1; /* Light grey */
+            background-color: #f1f1f1;
         }
         .input-container {
             position: relative;
@@ -51,123 +51,149 @@
             height: 100%;
             border-radius: 20px;
         }
+        .sidebar {
+            max-height: 80vh;
+            overflow-y: auto;
+            border-right: 1px solid #ccc;
+            padding-right: 10px;
+            padding-top: 10px;
+        }
+        .sidebar-user {
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        .sidebar-user:hover {
+            font-weight: bold;
+        }
+        /* Hide search results list until search query matches */
+        #user-search-results {
+            display: none;
+        }
+        .chat-box {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 20px;
+            background-color: white;
+        }
     </style>
 </head>
 
 <body>
-    <div class="container mt-5">
-        <h2 class="text-center">Chat with {{ target_user }}</h2>
-        <div class="chat-container" id="chat-log">
-            {% for message in messages %}
-                <div class="message {% if message.user.username == request.user.username %}sent{% else %}received{% endif %}">
-                    <strong>{{ message.user.username }}:</strong> {{ message.message }}
-                </div>
-            {% endfor %}
+<div class="container mt-5">
+    <div class="row">
+        <!-- Sidebar for search and chat history -->
+        <div class="col-md-3">
+            <div class="chat-box">
+                <!-- <h4>Search Users</h4> -->
+                <input type="text" class="form-control" id="user-search" placeholder="Search for users...">
+                <ul class="list-group mt-2" id="user-search-results">
+                    {% for user in all_users %}
+                    <li class="list-group-item search-user">
+                        <a href="{% url 'chat_box' user.username %}">{{ user.username }}</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+
+                <!-- <h4 class="mt-3">Chat History</h4> -->
+                <ul class="list-group">
+                    {% for user in chat_users %}
+                    <li class="list-group-item sidebar-user">
+                        <a href="{% url 'chat_box' user.username %}">{{ user.username }}</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
         </div>
-        <div class="input-container mt-3">
-            <input class="form-control" placeholder="Enter text here" id="input" type="text">
-            <button class="btn btn-primary" id="submit" type="button">Send</button>
+
+        <!-- Main chat window -->
+        <div class="col-md-9">
+            <div class="chat-box">
+                <h2 class="text-center">Chat with {{ target_user }}</h2>
+                <div class="chat-container" id="chat-log">
+                    {% for message in messages %}
+                    <div class="message {% if message.user.username == request.user.username %}sent{% else %}received{% endif %}">
+                        <strong>{{ message.user.username }}:</strong> {{ message.message }}
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="input-container mt-3">
+                    <input class="form-control" placeholder="Enter text here" id="input" type="text">
+                    <button class="btn btn-primary" id="submit" type="button">Send</button>
+                </div>
+            </div>
         </div>
     </div>
+</div>
 
-    {% comment %} Get data for username and chatbox name{% endcomment %}
-    {{ request.user.username|json_script:"user_username" }}
-    {{ chat_box_name|json_script:"box-name" }}
+<!-- Scripts -->
+<script>
+    document.querySelector('#user-search').addEventListener('input', function() {
+        const searchQuery = this.value.toLowerCase();
+        const users = document.querySelectorAll('.search-user');
+        const searchResults = document.querySelector('#user-search-results');
+        let anyVisible = false;
 
-    <script>
-        let chatSocket;
-        const user_username = JSON.parse(document.getElementById('user_username').textContent);
-        const boxName = JSON.parse(document.getElementById('box-name').textContent);
-        const chatLog = document.getElementById('chat-log');
-
-        // let chatSocket = new WebSocket(
-        //     'ws://' + window.location.host + '/ws/chat/' + boxName + '/'
-        // );
-
-        function initializeWebSocket() {
-            chatSocket = new WebSocket('ws://' + window.location.host + '/ws/chat/' + boxName + '/');
-
-            chatSocket.onmessage = function (e) {
-                const data = JSON.parse(e.data);
-                const messageType = data.username === user_username ? 'sent' : 'received';
-                addMessageToChat(data.message, data.username, messageType);
-            };
-
-            chatSocket.onclose = function(e) {
-                console.error('WebSocket closed unexpectedly:', e);
-                // Attempt to reconnect after a delay
-                setTimeout(function() {
-                    initializeWebSocket();
-                }, 1000);
-            };
-
-            chatSocket.onerror = function(e) {
-                console.error('WebSocket error observed:', e);
-            };
-        }
-
-        // Initialize the WebSocket connection
-        initializeWebSocket();
-
-
-        document.querySelector('#submit').onclick = function (e) {
-            const messageInputDom = document.querySelector('#input');
-            const message = messageInputDom.value;
-
-            if (message) {
-                // Send message via WebSocket
-                chatSocket.send(JSON.stringify({
-                    'message': message,
-                    'username': user_username,
-                }));
-                messageInputDom.value = ''; // Clear input field
+        users.forEach(function(user) {
+            const username = user.textContent.toLowerCase();
+            if (username.includes(searchQuery)) {
+                user.style.display = 'block';
+                anyVisible = true;
+            } else {
+                user.style.display = 'none';
             }
+        });
+
+        // Only display the search results if there's a match
+        if (searchQuery.length > 0 && anyVisible) {
+            searchResults.style.display = 'block';
+        } else {
+            searchResults.style.display = 'none';
+        }
+    });
+
+    let chatSocket;
+    const chatLog = document.getElementById('chat-log');
+
+    function initializeWebSocket() {
+        const boxName = "{{ chat_box_name }}";
+        chatSocket = new WebSocket('ws://' + window.location.host + '/ws/chat/' + boxName + '/');
+
+        chatSocket.onmessage = function (e) {
+            const data = JSON.parse(e.data);
+            const messageType = data.username === "{{ request.user.username }}" ? 'sent' : 'received';
+            addMessageToChat(data.message, data.username, messageType);
         };
 
-
-
-        function addMessageToChat(message, username, type) {
-            const messageDiv = document.createElement('div');
-            messageDiv.classList.add('message', type);
-            messageDiv.innerHTML = `<strong>${username}:</strong> ${message}`;
-            chatLog.appendChild(messageDiv);
-            chatLog.scrollTop = chatLog.scrollHeight; // Scroll to bottom
-        }
-        
-        
-        /*chatSocket.onmessage = function (e) {
-    const data = JSON.parse(e.data);
-    const messageType = data.username === user_username ? 'sent' : 'received';
-    addMessageToChat(data.message, data.username, messageType);
-};
-
-function addMessageToChat(message, username, type) {
-    // Create a new div element for the message
-    const messageDiv = document.createElement('div');
-    messageDiv.classList.add('message', type); // Add 'sent' or 'received' class based on the message type
-
-    // Create a structured HTML for the message
-    messageDiv.innerHTML = `
-        <div class="message-content">
-            <strong>${username}:</strong> ${message}
-        </div>
-    `;
-
-    // Find the chat log element to append messages to
-    const chatLog = document.getElementById('chat-text'); // Ensure 'chat-text' is the correct ID
-    if (chatLog) {
-        chatLog.appendChild(messageDiv); // Append the message to the chat log
-        chatLog.scrollTop = chatLog.scrollHeight; // Scroll to the bottom of the chat log
-    } else {
-        console.error("Chat log element not found. Please check the element ID or structure.");
+        chatSocket.onclose = function(e) {
+            console.error('WebSocket closed unexpectedly:', e);
+            setTimeout(function() {
+                initializeWebSocket();
+            }, 1000);
+        };
     }
-}*/
 
-    </script>
+    function addMessageToChat(message, username, type) {
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message', type);
+        messageDiv.innerHTML = `<strong>${username}:</strong> ${message}`;
+        chatLog.appendChild(messageDiv);
+        chatLog.scrollTop = chatLog.scrollHeight;
+    }
 
-    <!-- Optional JavaScript -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.4.0/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    document.querySelector('#submit').onclick = function () {
+        const messageInputDom = document.querySelector('#input');
+        const message = messageInputDom.value;
+        if (message) {
+            chatSocket.send(JSON.stringify({
+                'message': message,
+                'username': "{{ request.user.username }}"
+            }));
+            messageInputDom.value = '';
+        }
+    };
+
+    initializeWebSocket();
+</script>
 </body>
 </html>
