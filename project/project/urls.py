@@ -24,4 +24,5 @@ urlpatterns = [
     path("chat/<str:chat_box_name>/", chat_box, name="chat_box"),
     path('register/', register, name='register'),
     path('login/', CustomLoginView.as_view(), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
 ]
