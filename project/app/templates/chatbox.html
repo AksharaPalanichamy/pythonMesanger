@@ -59,6 +59,12 @@
         <h2 class="text-center">Chat with {{ target_user }}</h2>
         <div class="chat-container" id="chat-log">
             <!-- Chat messages will be dynamically inserted here -->
+            <!-- Display previous messages -->
+            {% for message in messages %}
+            <div class="message {% if message.sender.username == request.user.username %}sent{% else %}received{% endif %}">
+                <strong>{{ message.sender.username }}:</strong> {{ message.message }}
+            </div>
+            {% endfor %}
         </div>
         <div class="input-container mt-3">
             <input class="form-control" placeholder="Enter text here" id="input" type="text">
@@ -71,13 +77,40 @@
     {{ chat_box_name|json_script:"box-name" }}
 
     <script>
+        let chatSocket;
         const user_username = JSON.parse(document.getElementById('user_username').textContent);
         const boxName = JSON.parse(document.getElementById('box-name').textContent);
         const chatLog = document.getElementById('chat-log');
 
-        let chatSocket = new WebSocket(
-            'ws://' + window.location.host + '/ws/chat/' + boxName + '/'
-        );
+        // let chatSocket = new WebSocket(
+        //     'ws://' + window.location.host + '/ws/chat/' + boxName + '/'
+        // );
+
+        function initializeWebSocket() {
+            chatSocket = new WebSocket('ws://' + window.location.host + '/ws/chat/' + boxName + '/');
+
+            chatSocket.onmessage = function (e) {
+                const data = JSON.parse(e.data);
+                const messageType = data.username === user_username ? 'sent' : 'received';
+                addMessageToChat(data.message, data.username, messageType);
+            };
+
+            chatSocket.onclose = function(e) {
+                console.error('WebSocket closed unexpectedly:', e);
+                // Attempt to reconnect after a delay
+                setTimeout(function() {
+                    initializeWebSocket();
+                }, 1000);
+            };
+
+            chatSocket.onerror = function(e) {
+                console.error('WebSocket error observed:', e);
+            };
+        }
+
+        // Initialize the WebSocket connection
+        initializeWebSocket();
+
 
         document.querySelector('#submit').onclick = function (e) {
             const messageInputDom = document.querySelector('#input');
@@ -93,11 +126,7 @@
             }
         };
 
-        chatSocket.onmessage = function (e) {
-            const data = JSON.parse(e.data);
-            const messageType = data.username === user_username ? 'sent' : 'received';
-            addMessageToChat(data.message, data.username, messageType);
-        };
+
 
         function addMessageToChat(message, username, type) {
             const messageDiv = document.createElement('div');

@@ -1,6 +1,6 @@
 from django.shortcuts import render,get_object_or_404
 from django.contrib.auth.models import User
-from .models import ChatRoom
+from .models import ChatRoom,Message
 def chat_box(request, chat_box_name):
     # we will get the chatbox name from the url
     ##return render(request, "chatbox.html", {"chat_box_name": chat_box_name})
@@ -16,9 +16,12 @@ def chat_box(request, chat_box_name):
     chat_box_name=generate_room_name(current_user, target_user.username)
     chat_room, created = ChatRoom.objects.get_or_create(name=chat_box_name)
 
+    messages = Message.objects.filter(room=chat_room).order_by('timestamp')
+
     return render(request, 'chatbox.html', {
         'chat_box_name': chat_room.name,
         'target_user': target_user.username if target_user else None,
+        'messages': messages,
     })
 
 def generate_room_name(user1, user2):
