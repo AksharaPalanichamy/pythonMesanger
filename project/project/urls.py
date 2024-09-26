@@ -23,6 +23,7 @@ from django.contrib.auth import views as auth_views
 from app.admin import admin_site
 urlpatterns = [
     path("admin/", admin_site.urls),
+    path("admin/logout",admin_site.urls),
     path("chat/<str:chat_box_name>/", chat_box, name="chat_box"),
     path('register/', register, name='register'),
     path('login/', CustomLoginView.as_view(), name='login'),

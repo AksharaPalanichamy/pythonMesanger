@@ -11,29 +11,44 @@
 
     <style>
         body {
-            background-color: #f8f9fa;
+            background-color: #121212; /* Dark background */
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #ffffff; /* White text color for readability */
         }
         .dashboard-header {
-            background-color: white;
-            border-bottom: 1px solid #dee2e6;
+            background-color: #1f1f1f; /* Dark header background */
+            border-bottom: 1px solid #444; /* Subtle border for separation */
             padding: 10px 20px;
         }
         .dashboard-title {
             font-weight: bold;
             font-size: 24px;
-            color: #343a40;
+            color: #ffffff; /* White title color */
         }
         .dashboard-content {
             padding: 20px;
         }
         .card {
+            background-color: #1e1e1e; /* Darker card background */
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5); /* More prominent shadow for depth */
+            color: #ffffff; /* White text inside cards */
         }
         .btn-primary {
+            background-color: #007bff; /* Bootstrap primary color */
+            border-color: #007bff; /* Match border color */
             border-radius: 30px;
             padding: 10px 20px;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3; /* Darker shade on hover */
+        }
+        .btn-danger {
+            background-color: #dc3545; /* Danger button color */
+            border-color: #dc3545; /* Match border color */
+        }
+        .btn-danger:hover {
+            background-color: #c82333; /* Darker shade on hover */
         }
     </style>
     
@@ -43,7 +58,14 @@
     <div class="dashboard-header">
         <div class="container">
             <span class="dashboard-title">{{ site_header }}</span>
+            {% block logout_button %}{% endblock %}
         </div>
+        <!-- <div style="position: absolute; top: 9px; right: 20px;">
+            <form method="post" action="{% url 'admin:logout' %}" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Logout</button>
+            </form>
+        </div> -->
     </div>
 
     <div class="container dashboard-content">

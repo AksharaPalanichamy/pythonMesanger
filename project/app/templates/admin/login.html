@@ -13,42 +13,40 @@
 
     <style>
         body {
-            background-color: #f8f9fa;
+            background-color: #262728; /* Dark background */
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         .login-container {
-            min-height: 100vh;
+            min-height: 100vh; /* Full height of the viewport */
             display: flex;
-            justify-content: center;
-            align-items: center;
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Center vertically */
         }
         .login-box {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-            max-width: 400px;
+            background-color: #ffffff; /* White background for the box */
+            border-radius: 8px; /* Rounded corners */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Box shadow */
+            padding: 30px; /* Padding inside the box */
             width: 100%;
+            max-width: 400px; /* Maximum width */
         }
         .login-box h2 {
             font-weight: bold;
             margin-bottom: 30px;
-            text-align: center;
+            text-align: center; /* Centered title */
+            color: #343a40; /* Dark text */
         }
         .form-control {
-            border-radius: 30px;
-            padding: 10px 20px;
+            border-radius: 30px; /* Rounded input fields */
+            padding: 10px 20px; /* Padding inside input fields */
         }
         .btn-primary {
-            border-radius: 30px;
-            padding: 10px 20px;
-            width: 100%;
-        }
-        .form-group {
-            margin-bottom: 20px;
+            border-radius: 30px; /* Rounded button */
+            padding: 10px 20px; /* Padding inside button */
+            width: 100%; /* Full width button */
         }
         .alert {
-            border-radius: 30px;
+            border-radius: 30px; /* Rounded alert box */
         }
     </style>
 
@@ -79,7 +77,7 @@
                 <label for="id_username">Username</label>
                 <input type="text" class="form-control" id="id_username" name="username" placeholder="Enter your username" required>
             </div>
-
+            <br>
             <div class="form-group">
                 <label for="id_password">Password</label>
                 <input type="password" class="form-control" id="id_password" name="password" placeholder="Enter your password" required>
