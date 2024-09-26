@@ -18,13 +18,16 @@ from django.contrib import admin
 from django.conf.urls.static import static
 from django.conf import settings
 from django.urls import path
-from app.views import chat_box,register,CustomLoginView
+from app.views import chat_box,register,CustomLoginView,block_users_view,delete_chat_rooms_view,create_users_view
 from django.contrib.auth import views as auth_views
-
+from app.admin import admin_site
 urlpatterns = [
-    path("admin/", admin.site.urls),
+    path("admin/", admin_site.urls),
     path("chat/<str:chat_box_name>/", chat_box, name="chat_box"),
     path('register/', register, name='register'),
     path('login/', CustomLoginView.as_view(), name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
+    path('admin/block-users/', block_users_view, name='block_users'),
+    path('admin/delete-chat-rooms/', delete_chat_rooms_view, name='delete_chat_rooms'),
+    path('admin/create-users/', create_users_view, name='create_users'),
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

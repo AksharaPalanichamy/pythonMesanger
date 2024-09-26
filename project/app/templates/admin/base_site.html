@@ -1,8 +1,58 @@
-<!-- templates/admin/base_site.html -->
-{% extends "admin/base_site.html" %}
 {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ site_title }}{% endblock %}</title>
 
-{% block extrahead %}
-    {{ block.super }}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/admin_custom.css' %}">
-{% endblock %}
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" crossorigin="anonymous">
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .dashboard-header {
+            background-color: white;
+            border-bottom: 1px solid #dee2e6;
+            padding: 10px 20px;
+        }
+        .dashboard-title {
+            font-weight: bold;
+            font-size: 24px;
+            color: #343a40;
+        }
+        .dashboard-content {
+            padding: 20px;
+        }
+        .card {
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .btn-primary {
+            border-radius: 30px;
+            padding: 10px 20px;
+        }
+    </style>
+    
+    {% block extrahead %}{% endblock %}
+</head>
+<body>
+    <div class="dashboard-header">
+        <div class="container">
+            <span class="dashboard-title">{{ site_header }}</span>
+        </div>
+    </div>
+
+    <div class="container dashboard-content">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" crossorigin="anonymous"></script>
+</body>
+</html>

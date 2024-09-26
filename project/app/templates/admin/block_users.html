@@ -1,0 +1,29 @@
+{% extends "admin/base_site.html" %}
+
+{% block title %}Block Users{% endblock %}
+
+{% block content %}
+<h2>Block Users</h2>
+
+<!-- Display messages -->
+{% if messages %}
+    <div class="alert alert-info">
+        {% for message in messages %}
+            <p>{{ message }}</p>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<form method="post">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="user_id">Select User to Block:</label>
+        <select class="form-control" name="user_id" id="user_id" required>
+            {% for user in users %}
+                <option value="{{ user.id }}">{{ user.username }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <button type="submit" class="btn btn-danger">Block User</button>
+</form>
+{% endblock %}

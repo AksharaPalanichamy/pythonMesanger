@@ -1,0 +1,42 @@
+{% extends "admin/base_site.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h2>Welcome to the Admin Dashboard</h2>
+        <p>This is where you can manage your site.</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Block Users</h5>
+                <p class="card-text">Manage user accounts by blocking them from accessing the chat.</p>
+                <a href="{% url 'block_users' %}" class="btn btn-primary">Block Users</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Delete Chat Rooms</h5>
+                <p class="card-text">Remove unwanted chat rooms from the system.</p>
+                <a href="{% url 'delete_chat_rooms' %}" class="btn btn-primary">Delete Chat Rooms</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Create Users</h5>
+                <p class="card-text">Add new users to the system and grant them access.</p>
+                <a href="{% url 'create_users' %}" class="btn btn-primary">Create Users</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

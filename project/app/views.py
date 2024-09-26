@@ -6,7 +6,8 @@ from .forms import UserRegistrationForm
 from django.contrib.auth import login
 from django.contrib.auth.views import LoginView
 from django.urls import reverse
-
+from django.contrib import messages
+from django.contrib.auth.decorators import user_passes_test
 
 class CustomLoginView(LoginView):
     template_name = 'registration/login.html'  # Specify your login template
@@ -85,3 +86,47 @@ def generate_room_name(user1, user2):
     if not user2:  # If user2 is None or empty
         return user1  # Just return user1 as the room name
     return f"{min(user1, user2)}_{max(user1, user2)}"
+
+@user_passes_test(lambda u: u.is_superuser) 
+def block_users_view(request):
+    if request.method == 'POST':
+        user_id = request.POST.get('user_id')
+        try:
+            user = User.objects.get(id=user_id)
+            user.is_active = False  # Deactivate the user account
+            user.save()
+            messages.success(request, f'User {user.username} has been blocked.')
+        except User.DoesNotExist:
+            messages.error(request, 'User not found.')
+    
+    users = User.objects.filter(is_active=True)  # List only active users
+    return render(request, 'admin/block_users.html', {'users': users})
+
+@user_passes_test(lambda u: u.is_superuser) 
+def delete_chat_rooms_view(request):
+    if request.method == 'POST':
+        room_id = request.POST.get('room_id')
+        try:
+            chat_room = ChatRoom.objects.get(id=room_id)
+            chat_room.delete()
+            messages.success(request, 'Chat room has been deleted.')
+        except ChatRoom.DoesNotExist:
+            messages.error(request, 'Chat room not found.')
+
+    chat_rooms = ChatRoom.objects.all()  # List all chat rooms
+    return render(request, 'admin/delete_chat_rooms.html', {'chat_rooms': chat_rooms})
+
+@user_passes_test(lambda u: u.is_superuser) 
+def create_users_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        try:
+            user = User.objects.create_user(username=username, password=password)
+            user.save()
+            messages.success(request, f'User {username} has been created.')
+            return redirect('admin:index')  # Redirect to admin index after successful creation
+        except Exception as e:
+            messages.error(request, str(e))
+    
+    return render(request, 'admin/create_users.html')
