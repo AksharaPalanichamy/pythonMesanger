@@ -10,8 +10,9 @@
 
     <style>
         body {
-            background-color: #f8f9fa;
+            background-color: #151e27;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #d6dce2;
         }
         .login-container {
             min-height: 100vh;
@@ -20,9 +21,9 @@
             align-items: center;
         }
         .login-box {
-            background-color: white;
+            background-color: rgb(17, 0, 0);
             border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(115, 110, 110, 0.1);
             padding: 30px;
             max-width: 400px;
             width: 100%;
@@ -99,10 +100,10 @@
         <!-- Signup option -->
         <div class="login-footer mt-3">
             <p>Don't have an account? <a href="{% url 'register' %}">Sign up here</a></p>
+        <!-- </div>
+        <div class="admin-login"> -->
+            <p>Are you an admin? <a href="{% url 'admin:login' %}">Log in as admin</a></p>
         </div>
-    </div>
-    <div class="admin-login">
-        <p>Are you an admin? <a href="{% url 'admin:login' %}">Log in as admin</a></p>
     </div>
 </div>
 

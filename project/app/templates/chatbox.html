@@ -10,14 +10,15 @@
           crossorigin="anonymous">
     <style>
         body {
-            background-color: #f8f9fa;
+            background-color: #090738;
+            color: #f1f1f1;
         }
         .chat-container {
             height: 80vh; /* Fixed height for the chat window */
             overflow-y: auto; /* Enable vertical scrolling */
             border: 1px solid #ccc;
             border-radius: 8px;
-            background-color: white;
+            background-color: rgb(55, 54, 54);
             padding: 10px;
             display: flex;
             flex-direction: column; /* Align messages in a column */
@@ -32,10 +33,12 @@
         .message.sent {
             align-self: flex-end;
             background-color: #d4edda;
+            color: black;
         }
         .message.received {
             align-self: flex-start;
             background-color: #f1f1f1;
+            color: black;
         }
         .input-container {
             position: relative;
@@ -54,7 +57,7 @@
         .sidebar {
             max-height: 80vh; /* Ensure the sidebar height is matched */
             overflow-y: auto; /* Allow sidebar scrolling */
-            border-right: 1px solid #ccc;
+            border-right: 1px solid #050000;
             padding-right: 10px;
             padding-top: 10px;
         }
@@ -74,7 +77,8 @@
             border-radius: 8px;
             padding: 10px;
             margin-bottom: 20px;
-            background-color: white;
+            background-color: rgb(55, 54, 54);
+            height: 96.5vh;
         }
         .logout-button {
             margin-top: 10px; /* Space above logout button */
@@ -98,17 +102,18 @@
                     </form>
                 </div>
                 <input type="text" class="form-control mt-3" id="user-search" placeholder="Search for users...">
-                <ul class="list-group mt-2" id="user-search-results">
+                &nbsp;
+                <ul class="list-group mt-2" id="user-search-results" style="background-color: 272020;">
                     {% for user in all_users %}
                     <li class="list-group-item search-user">
                         <a href="{% url 'chat_box' user.username %}">{{ user.username }}</a>
                     </li>
                     {% endfor %}
                 </ul>
-
-                <ul class="list-group">
+                &nbsp;
+                <ul class="list-group" >
                     {% for user in chat_users %}
-                    <li class="list-group-item sidebar-user">
+                    <li class="list-group-item sidebar-user" style="background-color: 272020;">
                         <a href="{% url 'chat_box' user.username %}">{{ user.username }}</a>
                     </li>
                     {% endfor %}
