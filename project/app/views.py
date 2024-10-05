@@ -3,11 +3,12 @@ from django.contrib.auth.models import User
 from .models import ChatRoom,Message
 from django.db.models import Q
 from .forms import UserRegistrationForm
-from django.contrib.auth import login
+from django.contrib.auth import login,authenticate
 from django.contrib.auth.views import LoginView
 from django.urls import reverse
 from django.contrib import messages
-from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import user_passes_test,login_required
+from django.contrib.auth.forms import AuthenticationForm
 
 class CustomLoginView(LoginView):
     template_name = 'registration/login.html'  # Specify your login template
@@ -33,7 +34,7 @@ def register(request):
         form = UserRegistrationForm()
     return render(request, 'registration/register.html', {'form': form})
 
-
+@login_required
 def chat_box(request, chat_box_name):
 
     current_user = request.user.username
@@ -130,3 +131,20 @@ def create_users_view(request):
             messages.error(request, str(e))
     
     return render(request, 'admin/create_users.html')
+
+def custom_admin_login(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            if user is not None and user.is_staff:
+                login(request, user)
+                return redirect('/admin/')  # Redirect to admin dashboard
+            else:
+                messages.error(request, 'Invalid credentials or not an admin user.')
+    else:
+        form = AuthenticationForm()
+    
+    return render(request, 'admin/login.html', {'form': form})

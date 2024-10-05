@@ -128,7 +128,7 @@
                 <div class="chat-container" id="chat-log">
                     {% for message in messages %}
                     <div class="message {% if message.user.username == request.user.username %}sent{% else %}received{% endif %}">
-                        <strong>{{ message.user.username }}:</strong> {{ message.message }}
+                        {{ message.message }}
                     </div>
                     {% endfor %}
                 </div>

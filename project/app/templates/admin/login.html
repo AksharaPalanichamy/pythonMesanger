@@ -1,97 +1,79 @@
-{% extends "admin/login.html" %}
-{% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Required meta tags -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" crossorigin="anonymous">
-
+    <title>Admin Login</title>
     <style>
         body {
-            background-color: #262728; /* Dark background */
+            background-color: #151e27;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #d6dce2;
         }
         .login-container {
-            min-height: 100vh; /* Full height of the viewport */
+            min-height: 100vh;
             display: flex;
-            justify-content: center; /* Center horizontally */
-            align-items: center; /* Center vertically */
+            justify-content: center;
+            align-items: center;
         }
         .login-box {
-            background-color: #ffffff; /* White background for the box */
-            border-radius: 8px; /* Rounded corners */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Box shadow */
-            padding: 30px; /* Padding inside the box */
+            background-color: #1c1f25;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             width: 100%;
-            max-width: 400px; /* Maximum width */
+            max-width: 400px;
         }
         .login-box h2 {
-            font-weight: bold;
-            margin-bottom: 30px;
-            text-align: center; /* Centered title */
-            color: #343a40; /* Dark text */
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 20px;
         }
         .form-control {
-            border-radius: 30px; /* Rounded input fields */
-            padding: 10px 20px; /* Padding inside input fields */
+            border-radius: 30px;
+            padding: 10px;
         }
         .btn-primary {
-            border-radius: 30px; /* Rounded button */
-            padding: 10px 20px; /* Padding inside button */
-            width: 100%; /* Full width button */
+            border-radius: 30px;
+            padding: 8px 16px; /* Reduced padding */
+            width: auto; /* Adjust the width */
+            display: block;
+            margin: 0 auto; /* Center align the button */
         }
         .alert {
-            border-radius: 30px; /* Rounded alert box */
+            margin-top: 20px;
+            border-radius: 30px;
         }
     </style>
-
-    <title>Admin Login</title>
 </head>
 <body>
-<div class="login-container">
-    <div class="login-box">
-        <h2>{{ site_header }}</h2>
+    <div class="login-container">
+        <div class="login-box">
+            <h2>SecureIM Admin Login</h2>
 
-        <!-- Display errors if any -->
-        {% if form.errors %}
-        <div class="alert alert-danger" role="alert">
-            <ul>
-                {% for field in form %}
-                    {% for error in field.errors %}
-                    <li>{{ error }}</li>
-                    {% endfor %}
+            <!-- Display any error messages -->
+            {% if messages %}
+            <div class="alert alert-danger" role="alert">
+                {% for message in messages %}
+                    {{ message }}
                 {% endfor %}
-            </ul>
+            </div>
+            {% endif %}
+
+            <!-- Login form -->
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+
+                <button type="submit" class="btn btn-primary">Log In</button>
+            </form>
         </div>
-        {% endif %}
-
-        <!-- Login form -->
-        <form method="POST" action="{% url 'admin:login' %}">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="id_username">Username</label>
-                <input type="text" class="form-control" id="id_username" name="username" placeholder="Enter your username" required>
-            </div>
-            <br>
-            <div class="form-group">
-                <label for="id_password">Password</label>
-                <input type="password" class="form-control" id="id_password" name="password" placeholder="Enter your password" required>
-            </div>
-
-            <button type="submit" class="btn btn-primary">Login</button>
-        </form>
     </div>
-</div>
 
-<!-- Bootstrap JS and dependencies (Optional but for interactivity) -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" crossorigin="anonymous"></script>
-
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" crossorigin="anonymous"></script>
 </body>
 </html>

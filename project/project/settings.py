@@ -28,7 +28,7 @@ SECRET_CHAT_KEY='gshZe9ExY0YmH4ElommqfzKL5UyF3EopNhWmbGgyrw4='
 DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1']
-
+LOGIN_URL = 'login'
 
 # Application definition
 
@@ -89,7 +89,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'project_db',
         'USER': 'application_user',
-        'PASSWORD': '',
+        'PASSWORD': 'Akshara123!',
         'HOST': 'localhost',
         'PORT': '3306',
     }
