@@ -191,7 +191,7 @@
     function addMessageToChat(message, username, type) {
         const messageDiv = document.createElement('div');
         messageDiv.classList.add('message', type);
-        messageDiv.innerHTML = `<strong>${username}:</strong> ${message}`;
+        messageDiv.innerHTML = `${message}`;
         chatLog.appendChild(messageDiv);
         chatLog.scrollTop = chatLog.scrollHeight; // Scroll to the bottom after adding a message
     }
