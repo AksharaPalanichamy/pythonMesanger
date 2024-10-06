@@ -22,9 +22,10 @@ class ChatRoomConsumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
         message = text_data_json["message"]
         username = text_data_json["username"]
+        file_url = text_data_json.get("file_url", None) 
 
         # Save the encrypted message to the database
-        await self.save_message(username, self.chat_box_name, message)
+        await self.save_message(username, self.chat_box_name, message,file_url)
 
         # Send the message to the group
         await self.channel_layer.group_send(
@@ -33,6 +34,7 @@ class ChatRoomConsumer(AsyncWebsocketConsumer):
                 "type": "chatbox_message",
                 "message": message,
                 "username": username,
+                "file_url": file_url
             }
         )
 
@@ -40,6 +42,7 @@ class ChatRoomConsumer(AsyncWebsocketConsumer):
     async def chatbox_message(self, event):
         message = event["message"]
         username = event["username"]
+        file_url = event.get("file_url")
 
         # Send message and username of sender to WebSocket
         await self.send(
@@ -47,13 +50,20 @@ class ChatRoomConsumer(AsyncWebsocketConsumer):
                 {
                     "message": message,
                     "username": username,
+                    "file_url": file_url,
                 }
             )
         )
 
     @sync_to_async
-    def save_message(self, username, room_name, message):
+    def save_message(self, username, room_name, message,file_url):
         user = User.objects.get(username=username)
         room = ChatRoom.objects.get(name=room_name)
         # Create a new message (the encryption happens in the model's save method)
-        Message.objects.create(room=room, user=user, encrypted_message=message)
+        message_instance = Message.objects.create(room=room, user=user, encrypted_message=message)
+
+        # Handle file saving if a file URL is provided
+        if file_url:
+            # You can adjust how you save the file based on your requirements
+            message_instance.file = file_url  # Assuming `file` is a field in your Message model
+            message_instance.save()

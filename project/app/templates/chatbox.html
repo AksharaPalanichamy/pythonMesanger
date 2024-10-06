@@ -111,7 +111,7 @@
                     {% endfor %}
                 </ul>
                 &nbsp;
-                <ul class="list-group" >
+                <ul class="list-group">
                     {% for user in chat_users %}
                     <li class="list-group-item sidebar-user" style="background-color: 272020;">
                         <a href="{% url 'chat_box' user.username %}">{{ user.username }}</a>
@@ -129,11 +129,15 @@
                     {% for message in messages %}
                     <div class="message {% if message.user.username == request.user.username %}sent{% else %}received{% endif %}">
                         {{ message.message }}
+                        {% if message.file %}
+                            <br><a href="{{ message.file.url }}" download>Download file</a>
+                        {% endif %}
                     </div>
                     {% endfor %}
                 </div>
                 <div class="input-container mt-3">
                     <input class="form-control" placeholder="Enter text here" id="input" type="text">
+                    <input type="file" id="file-input" style="margin-top: 10px;">
                     <button class="btn btn-primary" id="submit" type="button">Send</button>
                 </div>
             </div>
@@ -177,7 +181,8 @@
         chatSocket.onmessage = function (e) {
             const data = JSON.parse(e.data);
             const messageType = data.username === "{{ request.user.username }}" ? 'sent' : 'received';
-            addMessageToChat(data.message, data.username, messageType);
+            console.log(data.file_url);
+            addMessageToChat(data.message, data.username, messageType, data.file_url);
         };
 
         chatSocket.onclose = function(e) {
@@ -188,23 +193,37 @@
         };
     }
 
-    function addMessageToChat(message, username, type) {
+    function addMessageToChat(message, username, type, fileUrl) {
         const messageDiv = document.createElement('div');
         messageDiv.classList.add('message', type);
-        messageDiv.innerHTML = `${message}`;
+        console.log(fileUrl);
+        messageDiv.innerHTML = `${message}` +
+            (fileUrl ? `<br><a href="${fileUrl}" download>Download file</a>` : '');
         chatLog.appendChild(messageDiv);
         chatLog.scrollTop = chatLog.scrollHeight; // Scroll to the bottom after adding a message
     }
 
     document.querySelector('#submit').onclick = function () {
         const messageInputDom = document.querySelector('#input');
+        const fileInputDom = document.querySelector('#file-input');
         const message = messageInputDom.value;
-        if (message) {
+        const file = fileInputDom.files[0];  // Get the file
+
+        const formData = new FormData();
+        formData.append('message', message);
+        if (file) {
+            formData.append('file', file);
+        }
+
+        // Send the message and file via WebSocket
+        if (message || file) {
             chatSocket.send(JSON.stringify({
                 'message': message,
-                'username': "{{ request.user.username }}"
+                'username': "{{ request.user.username }}",
+                'file_url': file ? URL.createObjectURL(file) : null // Create a temporary URL for the file
             }));
             messageInputDom.value = ''; // Clear the input after sending
+            fileInputDom.value = ''; // Clear the file input after sending
         }
     };
 

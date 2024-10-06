@@ -75,6 +75,13 @@ def chat_box(request, chat_box_name):
 
     messages = Message.objects.filter(room=chat_room).order_by('timestamp')
 
+    if request.method == 'POST':
+            message_content = request.POST.get('message')  # Assuming this is the text message
+            file = request.FILES.get('file')  # Get the uploaded file
+
+            # Create a new message instance
+            Message.objects.create(room=chat_room, user=request.user, encrypted_message=message_content, file=file)
+
     return render(request, 'chatbox.html', {
         'chat_box_name': chat_room.name,
         'target_user': target_user.username if target_user else None,
