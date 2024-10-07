@@ -181,8 +181,8 @@
         chatSocket.onmessage = function (e) {
             const data = JSON.parse(e.data);
             const messageType = data.username === "{{ request.user.username }}" ? 'sent' : 'received';
-            console.log(data.file_url);
-            addMessageToChat(data.message, data.username, messageType, data.file_url);
+            
+            addMessageToChat(data.message, data.username, messageType, data.file_url,data.fileName);
         };
 
         chatSocket.onclose = function(e) {
@@ -193,12 +193,11 @@
         };
     }
 
-    function addMessageToChat(message, username, type, fileUrl) {
+    function addMessageToChat(message, username, type, fileUrl,fileName) {
         const messageDiv = document.createElement('div');
         messageDiv.classList.add('message', type);
-        console.log(fileUrl);
         messageDiv.innerHTML = `${message}` +
-            (fileUrl ? `<br><a href="${fileUrl}" download>Download file</a>` : '');
+            (fileUrl ? `<br><a href="${fileUrl}" download>${fileName}</a>` : '');
         chatLog.appendChild(messageDiv);
         chatLog.scrollTop = chatLog.scrollHeight; // Scroll to the bottom after adding a message
     }
@@ -220,7 +219,8 @@
             chatSocket.send(JSON.stringify({
                 'message': message,
                 'username': "{{ request.user.username }}",
-                'file_url': file ? URL.createObjectURL(file) : null // Create a temporary URL for the file
+                'file_url': file ? URL.createObjectURL(file) : null, // Create a temporary URL for the file
+                'file_name': file.name
             }));
             messageInputDom.value = ''; // Clear the input after sending
             fileInputDom.value = ''; // Clear the file input after sending

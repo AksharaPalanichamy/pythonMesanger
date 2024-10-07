@@ -17,6 +17,8 @@ class Message(models.Model):
     encrypted_message = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
     file = models.FileField(upload_to='uploads/', blank=True, null=True)
+    file_url = models.URLField(null=True, blank=True)  # Store the file URL/path
+    file_name = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
         return f'{self.user.username}: {self.message[:50]}'
