@@ -98,7 +98,7 @@
             <div class="chat-box">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <strong>Logged in as: {{ request.user.username }}</strong>
+                        <strong>{{ request.user.username }}</strong>
                     </div>
                     <form method="POST" action="{% url 'logout' %}">
                         {% csrf_token %}

@@ -30,6 +30,8 @@ def register(request):
             user.save()
             ##login(request, user)  # Automatically log in the user
             return redirect('login')  # Redirect to a home page or wherever you want
+        else:
+            messages.error(request, "Please correct the errors below.")
     else:
         form = UserRegistrationForm()
     return render(request, 'registration/register.html', {'form': form})
