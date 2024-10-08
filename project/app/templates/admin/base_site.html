@@ -16,7 +16,7 @@
             color: #ffffff; /* White text color for readability */
         }
         .dashboard-header {
-            background-color: #1f1f1f; /* Dark header background */
+            background-color: #071820; /* Dark header background */
             border-bottom: 1px solid #444; /* Subtle border for separation */
             padding: 10px 20px;
         }
@@ -57,6 +57,7 @@
 <body>
     <div class="dashboard-header">
         <div class="container">
+            <img src="{% static 'img/logo.png' %}" alt="Logo" class="logo" style="width: 70px; height: auto;">
             <span class="dashboard-title">{{ site_header }}</span>
             <div style="position: absolute; top: 9px; right: 20px;">
                 {% if show_home_button %}

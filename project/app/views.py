@@ -113,7 +113,7 @@ def block_users_view(request):
     context = {
         'users': users,
         'site_title': 'Admin Portal',  # Custom site title
-        'site_header': 'SecureIM Admin',  # Custom site header
+        'site_header': 'Syergy Plus Admin',  # Custom site header
         'show_home_button':True
     }
     return render(request, 'admin/block_users.html', context)
@@ -133,7 +133,7 @@ def delete_chat_rooms_view(request):
     context = {
         'chat_rooms': chat_rooms,
         'site_title': 'Admin Portal',  # Custom site title
-        'site_header': 'SecureIM Admin',  # Custom site header
+        'site_header': 'Syergy Plus Admin',  # Custom site header
         'show_home_button':True
     }
     return render(request, 'admin/delete_chat_rooms.html', context)
@@ -157,7 +157,7 @@ def create_users_view(request):
             messages.error(request, str(e))
     context = {
         'site_title': 'Admin Portal',  # Set your site title
-        'site_header': 'SecureIM Admin',  # Set your site header
+        'site_header': 'Syergy Plus Admin',  # Set your site header
         'show_home_button':True
     }
     return render(request, 'admin/create_users.html',context)
