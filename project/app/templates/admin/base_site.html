@@ -58,14 +58,19 @@
     <div class="dashboard-header">
         <div class="container">
             <span class="dashboard-title">{{ site_header }}</span>
-            {% block logout_button %}{% endblock %}
+            <div style="position: absolute; top: 9px; right: 20px;">
+                {% if show_home_button %}
+                    <form method="post" action="{% url 'admin:index' %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Home</button>
+                    </form>
+                {% endif %}
+                <form method="post" action="{% url 'admin:logout' %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Logout</button>
+                </form>
+            </div> 
         </div>
-        <!-- <div style="position: absolute; top: 9px; right: 20px;">
-            <form method="post" action="{% url 'admin:logout' %}" style="display: inline;">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-danger">Logout</button>
-            </form>
-        </div> -->
     </div>
 
     <div class="container dashboard-content">

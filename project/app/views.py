@@ -110,7 +110,13 @@ def block_users_view(request):
             messages.error(request, 'User not found.')
     
     users = User.objects.filter(is_active=True)  # List only active users
-    return render(request, 'admin/block_users.html', {'users': users})
+    context = {
+        'users': users,
+        'site_title': 'Admin Portal',  # Custom site title
+        'site_header': 'SecureIM Admin',  # Custom site header
+        'show_home_button':True
+    }
+    return render(request, 'admin/block_users.html', context)
 
 @user_passes_test(lambda u: u.is_superuser) 
 def delete_chat_rooms_view(request):
@@ -124,22 +130,37 @@ def delete_chat_rooms_view(request):
             messages.error(request, 'Chat room not found.')
 
     chat_rooms = ChatRoom.objects.all()  # List all chat rooms
-    return render(request, 'admin/delete_chat_rooms.html', {'chat_rooms': chat_rooms})
+    context = {
+        'chat_rooms': chat_rooms,
+        'site_title': 'Admin Portal',  # Custom site title
+        'site_header': 'SecureIM Admin',  # Custom site header
+        'show_home_button':True
+    }
+    return render(request, 'admin/delete_chat_rooms.html', context)
 
 @user_passes_test(lambda u: u.is_superuser) 
 def create_users_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
+        email = request.POST.get('email')
+        is_admin=request.POST.get('is_admin')
         try:
-            user = User.objects.create_user(username=username, password=password)
+            if is_admin:
+                user=User.objects.create_superuser(username=username,email=email,password=password)
+            else:
+                user = User.objects.create_user(username=username,email=email, password=password)
             user.save()
             messages.success(request, f'User {username} has been created.')
-            return redirect('admin:index')  # Redirect to admin index after successful creation
+            return redirect('admin:create_users')  # Redirect to admin index after successful creation
         except Exception as e:
             messages.error(request, str(e))
-    
-    return render(request, 'admin/create_users.html')
+    context = {
+        'site_title': 'Admin Portal',  # Set your site title
+        'site_header': 'SecureIM Admin',  # Set your site header
+        'show_home_button':True
+    }
+    return render(request, 'admin/create_users.html',context)
 
 def custom_admin_login(request):
     if request.method == 'POST':
@@ -155,5 +176,4 @@ def custom_admin_login(request):
                 messages.error(request, 'Invalid credentials or not an admin user.')
     else:
         form = AuthenticationForm()
-    
     return render(request, 'admin/login.html', {'form': form})
