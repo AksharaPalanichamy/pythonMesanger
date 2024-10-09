@@ -43,7 +43,7 @@ class ChatRoomConsumer(AsyncWebsocketConsumer):
     async def chatbox_message(self, event):
         message = event["message"]
         username = event["username"]
-        file_url = event.get("file_url")
+        file_url = event.get("file_url",None)
         file_name = event.get("fileName", "")
 
         # Send message and username of sender to WebSocket

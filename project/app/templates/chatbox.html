@@ -20,6 +20,8 @@
             padding: 10px;
             margin-bottom: 10px; /* Space above the input area */
             border-radius: 8px;
+            display: flex;
+            flex-direction: column;
         }
         .message {
             margin: 5px 0;
@@ -198,8 +200,7 @@
         chatSocket.onmessage = function (e) {
             const data = JSON.parse(e.data);
             const messageType = data.username === "{{ request.user.username }}" ? 'sent' : 'received';
-            
-            addMessageToChat(data.message, data.username, messageType, data.file_url,data.fileName);
+            addMessageToChat(data.message, data.username, messageType, data.file_url||'',data.fileName||'');
         };
 
         chatSocket.onclose = function(e) {
@@ -210,7 +211,7 @@
         };
     }
 
-    function addMessageToChat(message, username, type, fileUrl,fileName) {
+    function addMessageToChat(message, username, type, fileUrl='',fileName='') {
         const messageDiv = document.createElement('div');
         messageDiv.classList.add('message', type);
         messageDiv.innerHTML = `${message}` +
@@ -237,7 +238,7 @@
                 'message': message,
                 'username': "{{ request.user.username }}",
                 'file_url': file ? URL.createObjectURL(file) : null, // Create a temporary URL for the file
-                'file_name': file.name
+                'file_name': file?file.name:null
             }));
             messageInputDom.value = ''; // Clear the input after sending
             fileInputDom.value = ''; // Clear the file input after sending
