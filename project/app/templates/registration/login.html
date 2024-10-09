@@ -78,18 +78,6 @@
             </ul>
         </div>
         {% endif %}
-        <!-- Display errors if any
-        {% if form.errors %}
-        <div class="alert alert-danger" role="alert">
-            <ul>
-                {% for field in form %}
-                    {% for error in field.errors %}
-                    <li>{{ error }}</li>
-                    {% endfor %}
-                {% endfor %}
-            </ul>
-        </div>
-        {% endif %} -->
 
         <!-- Login form -->
         <form method="POST" action="{% url 'login' %}">
