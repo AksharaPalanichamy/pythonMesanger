@@ -3,9 +3,13 @@ import re
 from django import forms
 from django.contrib.auth.models import User
 
+from .models import UserProfile
+
 class UserRegistrationForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
     password_confirm = forms.CharField(widget=forms.PasswordInput, label='Confirm Password')
+    security_question = forms.CharField(max_length=255, required=True)
+    security_answer = forms.CharField(max_length=255, required=True)
 
     class Meta:
         model = User
@@ -46,3 +50,21 @@ class UserRegistrationForm(forms.ModelForm):
         if commit:
             user.save()
         return user
+    
+class PasswordResetForm(forms.Form):
+    username = forms.CharField(max_length=150, required=True)
+    security_answer = forms.CharField(max_length=255, required=True)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        username = cleaned_data.get("username")
+        security_answer = cleaned_data.get("security_answer")
+
+        try:
+            user = User.objects.get(username=username)
+            profile = UserProfile.objects.get(user=user)
+
+            if profile.security_answer != security_answer:
+                raise forms.ValidationError("Incorrect security answer.")
+        except User.DoesNotExist:
+            raise forms.ValidationError("User does not exist.")

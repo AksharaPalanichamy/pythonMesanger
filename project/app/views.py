@@ -1,14 +1,15 @@
 from django.shortcuts import render,get_object_or_404,redirect
 from django.contrib.auth.models import User
-from .models import ChatRoom,Message
+from .models import ChatRoom,Message, UserProfile
 from django.db.models import Q
-from .forms import UserRegistrationForm
+from .forms import PasswordResetForm, UserRegistrationForm
 from django.contrib.auth import login,authenticate
 from django.contrib.auth.views import LoginView
 from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test,login_required
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.hashers import make_password
 
 class CustomLoginView(LoginView):
     template_name = 'registration/login.html'  # Specify your login template
@@ -28,6 +29,11 @@ def register(request):
             user = form.save(commit=False)
             user.set_password(form.cleaned_data['password'])  # Hash the password
             user.save()
+            UserProfile.objects.create(
+                user=user,
+                security_question=form.cleaned_data['security_question'],
+                security_answer=form.cleaned_data['security_answer']
+            )
             ##login(request, user)  # Automatically log in the user
             return redirect('login')  # Redirect to a home page or wherever you want
         else:
@@ -177,3 +183,20 @@ def custom_admin_login(request):
     else:
         form = AuthenticationForm()
     return render(request, 'admin/login.html', {'form': form})
+
+def reset_password(request):
+    if request.method == "POST":
+        form = PasswordResetForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            new_password = form.cleaned_data.get('new_password')  # Get new password from the request
+            # Update the user's password
+            user = User.objects.get(username=username)
+            user.password = make_password(new_password)
+            user.save()
+            messages.success(request, "Your password has been reset successfully.")
+            return redirect('login')
+    else:
+        form = PasswordResetForm()
+
+    return render(request, 'reset_password.html', {'form': form})

@@ -128,6 +128,16 @@
                         {{ form.password_confirm.errors.as_text }}
                     </div>
                 </div>
+
+                <div class="form-group">
+                    <label for="security_question">Security Question</label>
+                    <input type="text" name="security_question" class="form-control" id="security_question" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="security_answer">Security Answer</label>
+                    <input type="text" name="security_answer" class="form-control" id="security_answer" required>
+                </div>
                 
                 <button type="submit" class="btn btn-primary">Register</button>
             </form>
