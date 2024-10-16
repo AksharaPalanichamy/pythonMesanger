@@ -1,3 +1,5 @@
+import json
+from django.http import JsonResponse
 from django.shortcuts import render,get_object_or_404,redirect
 from django.contrib.auth.models import User
 from .models import ChatRoom,Message, UserProfile
@@ -200,3 +202,31 @@ def reset_password(request):
         form = PasswordResetForm()
 
     return render(request, 'reset_password.html', {'form': form})
+
+def validate_username(request):
+    if request.method == 'POST':
+        try:
+            # Get the username from the request body
+            data = json.loads(request.body)
+            username = data.get('username')
+            
+            # Check if username exists
+            if not username:
+                return JsonResponse({'success': False, 'message': 'Username is required'})
+            
+            # Get the user object and associated profile
+            user = User.objects.get(username=username)
+            
+            profile = UserProfile.objects.get(user_id=user.id)
+            # Return success and the user's security question
+            return JsonResponse({'success': True, 'security_question': profile.security_question})
+        
+        # If the user or profile doesn't exist, return an error
+        except User.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'User not found'})
+        except UserProfile.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'User profile not found'})
+        except json.JSONDecodeError:
+            return JsonResponse({'success': False, 'message': 'Invalid request format'})
+    else:
+        return JsonResponse({'success': False, 'message': 'Invalid request method'})
