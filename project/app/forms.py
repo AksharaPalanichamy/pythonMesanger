@@ -54,7 +54,7 @@ class UserRegistrationForm(forms.ModelForm):
 class PasswordResetForm(forms.Form):
     username = forms.CharField(max_length=150, required=True)
     security_answer = forms.CharField(max_length=255, required=True)
-
+    new_password = forms.CharField(widget=forms.PasswordInput(),required=True)
     def clean(self):
         cleaned_data = super().clean()
         username = cleaned_data.get("username")

@@ -191,7 +191,7 @@ def reset_password(request):
         form = PasswordResetForm(request.POST)
         if form.is_valid():
             username = form.cleaned_data['username']
-            new_password = form.cleaned_data.get('new_password')  # Get new password from the request
+            new_password = form.cleaned_data['new_password']  # Get new password from the request
             # Update the user's password
             user = User.objects.get(username=username)
             user.password = make_password(new_password)

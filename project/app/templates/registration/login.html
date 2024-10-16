@@ -12,9 +12,9 @@
 
     <style>
         body {
-            background-color: #151e27;
+            background-color: #0e0e10; /* Darker background for a more intense contrast */
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #d6dce2;
+            color: #e0e0e0; /* Light gray for text */
         }
         .login-container {
             min-height: 100vh;
@@ -23,10 +23,10 @@
             align-items: center;
         }
         .login-box {
-            background-color: rgb(17, 0, 0);
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(115, 110, 110, 0.1);
-            padding: 30px;
+            background-color: #1c1c1f; /* Very dark gray for the box background */
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7); /* More intense shadow */
+            padding: 40px;
             max-width: 400px;
             width: 100%;
         }
@@ -34,32 +34,44 @@
             font-weight: bold;
             margin-bottom: 30px;
             text-align: center;
+            color: #d3d3d3; /* Softer light gray for headers */
         }
         .form-control {
-            border-radius: 30px;
-            padding: 10px 20px;
+            border-radius: 25px;
+            padding: 12px 20px;
+            background-color: #2a2a30; /* Darker gray for input fields */
+            color: #e0e0e0;
+            border: 1px solid #343434;
+        }
+        .form-control:focus {
+            background-color: #2a2a30;
+            color: #e0e0e0;
+            border-color: #606060; /* Subtle border highlight */
+            box-shadow: none;
         }
         .btn-primary {
-            border-radius: 30px;
-            padding: 10px 20px;
+            background-color: #454545; /* Dark gray for button */
+            border: none;
+            border-radius: 25px;
+            padding: 12px 20px;
             width: 100%;
         }
-        .form-group {
-            margin-bottom: 20px;
+        .btn-primary:hover {
+            background-color: #5a5a5a; /* Slightly lighter gray for hover */
         }
         .login-footer {
             text-align: center;
             margin-top: 20px;
         }
         .login-footer a {
-            color: #007bff;
+            color: #999999; /* Muted gray for links */
             text-decoration: none;
         }
         .login-footer a:hover {
             text-decoration: underline;
         }
         .alert {
-            border-radius: 30px;
+            border-radius: 25px;
         }
     </style>
 
@@ -68,7 +80,7 @@
 <body>
 <div class="login-container">
     <div class="login-box">
-        <h2><img src="{% static 'img/logo.png' %}" alt="Logo" style="width: 70px; height: auto;"> Login</h2>
+        <h2><img src="{% static 'img/logo.png' %}" alt="Logo" style="width: 90px; height: auto;"> Login</h2>
         {% if form.non_field_errors %}
         <div class="alert alert-danger" role="alert">
             <ul>
@@ -98,8 +110,6 @@
         <!-- Signup option -->
         <div class="login-footer mt-3">
             <p>Don't have an account? <a href="{% url 'register' %}">Sign up here</a></p>
-        <!-- </div>
-        <div class="admin-login"> -->
             <p>Are you an admin? <a href="{% url 'admin:login' %}">Log in as admin</a></p>
             <p><a href="{% url 'reset_password' %}">Forgot your password?</a></p>
         </div>
