@@ -10,7 +10,7 @@
           crossorigin="anonymous">
     <style>
         body {
-            background-color: #090738;
+            background-color: #141d14;
             color: #f1f1f1;
         }
         .chat-container {
@@ -141,7 +141,7 @@
             <!-- Main chat window -->
             <div class="col-md-9">
                 <div class="chat-box">
-                    <h2 class="text-left">{{ target_user }}</h2>
+                    <h2 class="text-left" style="margin-bottom: 20px;" >{{ target_user }}</h2>
                     <div class="chat-container" id="chat-log">
                         {% for message in messages %}
                         <div class="message {% if message.user.username == request.user.username %}sent{% else %}received{% endif %}">
@@ -149,9 +149,12 @@
                             {% if message.file %}
                                 <br><a href="{{ message.file.url }}" download>{{message.file_name}}</a>
                             {% endif %}
+                            <div class="timestamp" style="color: gray;">
+                                <small>{{ message.timestamp|date:"M d, Y H:i" }}</small>
+                            </div>
                         </div>
                         {% endfor %}
-                    </div>
+                    </div>                    
                     <div class="input-container mt-3">
                         <input class="form-control" placeholder="Enter text here" id="input" type="text">
                         <input type="file" id="file-input" style="display: none;">
@@ -200,7 +203,8 @@
         chatSocket.onmessage = function (e) {
             const data = JSON.parse(e.data);
             const messageType = data.username === "{{ request.user.username }}" ? 'sent' : 'received';
-            addMessageToChat(data.message, data.username, messageType, data.file_url||'',data.fileName||'');
+            const timestamp = data.timestamp;
+            addMessageToChat(data.message, data.username, messageType, data.file_url||'',data.fileName||'',data.timestamp||'');
         };
 
         chatSocket.onclose = function(e) {
@@ -211,11 +215,14 @@
         };
     }
 
-    function addMessageToChat(message, username, type, fileUrl='',fileName='') {
+    function addMessageToChat(message, username, type, fileUrl='',fileName='',timestamp='') {
         const messageDiv = document.createElement('div');
         messageDiv.classList.add('message', type);
         messageDiv.innerHTML = `${message}` +
-            (fileUrl ? `<br><a href="${fileUrl}" download>${fileName}</a>` : '');
+        (fileUrl ? `<br><a href="${fileUrl}" download>${fileName}</a>` : '') +
+        `<div class="timestamp" style="color: gray;">
+            <small>${timestamp}</small>
+        </div>`;
         chatLog.appendChild(messageDiv);
         chatLog.scrollTop = chatLog.scrollHeight; // Scroll to the bottom after adding a message
     }
