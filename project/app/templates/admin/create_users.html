@@ -7,7 +7,7 @@
 <!-- <h2>Create Users</h2> -->
 <div class="row">
     <div class="col-md-12">
-        <h2>Create Users</h2>
+        <h2></h2>
         <p></p>
     </div>
 </div>
@@ -34,6 +34,20 @@
     <div class="form-group">
         <label for="email">Email:</label>
         <input type="email" class="form-control" name="email" id="email" required style="max-width: 300px;">
+    </div>
+    <div class="form-group">
+        <label for="security_question">Security Question:</label>
+        <select class="form-control" name="security_question" id="security_question" required style="max-width: 300px;">
+            <option value="" disabled selected>Select a security question</option>
+            <option value="mother_maiden">What is your mother's maiden name?</option>
+            <option value="first_pet">What was the name of your first pet?</option>
+            <option value="birth_city">What city were you born in?</option>
+            <option value="favorite_color">What is your favorite color?</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="security_answer">Answer:</label>
+        <input type="text" class="form-control" name="security_answer" id="security_answer" required style="max-width: 300px;">
     </div>
     <div class="form-group form-check">
         <input type="checkbox" class="form-check-input" name="is_admin" id="is_admin">

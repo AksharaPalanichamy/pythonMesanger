@@ -8,7 +8,7 @@ from .views import block_users_view, delete_chat_rooms_view, create_users_view
 # admin.site.enable_nav_sidebar = False
 
 class MyAdminSite(admin.AdminSite):
-    site_header = "Syergy Plus Admin"
+    site_header = "Welcome to the Admin Dashboard"
     site_title = "Admin Portal"
     index_title = "Welcome to the Admin Portal"
 

@@ -94,7 +94,7 @@ def chat_box(request, chat_box_name):
 
     return render(request, 'chatbox.html', {
         'chat_box_name': chat_room.name,
-        'target_user': target_user.username if target_user else None,
+        'target_user': target_user.username if target_user else "Search for people to connect with!",
         'messages': messages,
         'chat_users': chat_users,
         'all_users': all_users,
@@ -121,7 +121,7 @@ def block_users_view(request):
     context = {
         'users': users,
         'site_title': 'Admin Portal',  # Custom site title
-        'site_header': 'Syergy Plus Admin',  # Custom site header
+        'site_header': 'Block user',  # Custom site header
         'show_home_button':True
     }
     return render(request, 'admin/block_users.html', context)
@@ -141,7 +141,7 @@ def delete_chat_rooms_view(request):
     context = {
         'chat_rooms': chat_rooms,
         'site_title': 'Admin Portal',  # Custom site title
-        'site_header': 'Syergy Plus Admin',  # Custom site header
+        'site_header': 'Delete Chatrooms',  # Custom site header
         'show_home_button':True
     }
     return render(request, 'admin/delete_chat_rooms.html', context)
@@ -153,19 +153,29 @@ def create_users_view(request):
         password = request.POST.get('password')
         email = request.POST.get('email')
         is_admin=request.POST.get('is_admin')
+        security_question = request.POST.get('security_question')
+        security_answer = request.POST.get('security_answer')
         try:
             if is_admin:
                 user=User.objects.create_superuser(username=username,email=email,password=password)
             else:
                 user = User.objects.create_user(username=username,email=email, password=password)
             user.save()
+
+            if security_question and security_answer:
+                UserProfile.objects.create(
+                    user=user,
+                    security_question=security_question,
+                    security_answer=security_answer 
+                )
+
             messages.success(request, f'User {username} has been created.')
             return redirect('admin:create_users')  # Redirect to admin index after successful creation
         except Exception as e:
             messages.error(request, str(e))
     context = {
         'site_title': 'Admin Portal',  # Set your site title
-        'site_header': 'Syergy Plus Admin',  # Set your site header
+        'site_header': 'Create User',  # Set your site header
         'show_home_button':True
     }
     return render(request, 'admin/create_users.html',context)

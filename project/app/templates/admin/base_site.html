@@ -11,19 +11,28 @@
 
     <style>
         body {
-            background-color: #121212; /* Dark background */
+            background-color: #141d14; /* Dark background */
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: #ffffff; /* White text color for readability */
         }
         .dashboard-header {
-            background-color: #071820; /* Dark header background */
+            background-color: #1e1e1e; /* Dark header background */
             border-bottom: 1px solid #444; /* Subtle border for separation */
             padding: 10px 20px;
+            position: relative; /* Set position relative for absolute positioning of logo */
+        }
+        .logo {
+            position: static; /* Allow positioning relative to dashboard-header */
+            top: 10px; /* Adjust top distance */
+            left: 20px; /* Adjust left distance */
+            width: 70px; /* Logo width */
+            height: auto; /* Maintain aspect ratio */
         }
         .dashboard-title {
             font-weight: bold;
             font-size: 24px;
             color: #ffffff; /* White title color */
+            margin-left: 100px; /* Space for the logo */
         }
         .dashboard-content {
             padding: 20px;
@@ -56,31 +65,46 @@
 </head>
 <body>
     <div class="dashboard-header">
-        <div class="container">
-            <img src="{% static 'img/logo.png' %}" alt="Logo" class="logo" style="width: 70px; height: auto;">
-            <span class="dashboard-title">{{ site_header }}</span>
-            <div style="position: absolute; top: 9px; right: 20px;">
-                {% if show_home_button %}
-                    <form method="post" action="{% url 'admin:index' %}" style="display: inline;">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-danger">Home</button>
-                    </form>
-                {% endif %}
-                <form method="post" action="{% url 'admin:logout' %}" style="display: inline;">
+        <img src="{% static 'img/logo.png' %}" alt="Logo" class="logo">
+        <span class="dashboard-title">{{ site_header }}</span>
+        <div style="position: absolute; top: 9px; right: 20px;">
+            {% if show_home_button %}
+                <form method="post" action="{% url 'admin:index' %}" style="display: inline;">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-danger">Logout</button>
+                    <button type="submit" class="btn btn-danger">Home</button>
                 </form>
-            </div> 
-        </div>
+            {% endif %}
+            <form method="post" action="{% url 'admin:logout' %}" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Logout</button>
+            </form>
+        </div> 
     </div>
 
     <div class="container dashboard-content">
-        {% block content %}
-        {% endblock %}
+        {% block content %}{% endblock %}
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" crossorigin="anonymous"></script>
+
+    <script>
+        let timeout;
+
+        function resetTimer() {
+            clearTimeout(timeout);
+            timeout = setTimeout(function() {
+                // Automatically log out after 5 minutes of inactivity
+                document.querySelector('form[action="{% url "admin:logout" %}"]').submit();
+            }, 300000); // 5 minutes in milliseconds
+        }
+
+        // Events to reset the timer on user interaction
+        window.onload = resetTimer;
+        document.onmousemove = resetTimer;
+        document.onkeypress = resetTimer;
+        document.ontouchstart = resetTimer; // For touch devices
+    </script>
 </body>
 </html>
